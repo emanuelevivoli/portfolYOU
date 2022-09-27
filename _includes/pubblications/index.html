@@ -1,0 +1,59 @@
+
+<div class="card-columns m-3 mt-5">
+
+  <!-- Remote pubblications -->
+  {% for remote_pubblication in page.remote_pubblications %}
+
+    {%- for repo in site.github.public_repositories -%}
+
+      {%- if remote_pubblication == repo.name -%}
+
+        {%- assign pubblication = repo -%}
+        {%- assign words = pubblication.name | split: '-' -%}
+        
+        {%- capture titlecase -%}
+          {%- for word in words -%}
+            {{ word | capitalize | append: ' ' }}
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        {%- assign pubblication_type  = "remote" -%}
+        {%- assign pubblication_id    = pubblication.name -%}
+        {%- assign pubblication_img   = false -%}
+        {%- assign pubblication_name  = titlecase | strip -%}
+        {%- assign pubblication_desc  = pubblication.description -%}
+        {%- assign pubblication_url   = pubblication.html_url -%}
+        {%- assign pubblication_tools = pubblication.topics -%}
+        {%- assign external      = true -%}
+
+        {% include pubblications/pubblication-card.html %}
+
+      {%- endif -%}
+
+    {%- endfor -%}
+
+  {% endfor %}
+
+  <!-- Local pubblications -->
+  {% for pubblication in site.pubblications %}
+
+    {%- assign pubblication_type  = "local" -%}
+    {%- assign pubblication_id    = pubblication.name | slugify -%}
+    {%- assign pubblication_img   = pubblication.image -%}
+    {%- assign pubblication_name  = pubblication.name -%}
+    {%- assign pubblication_desc  = pubblication.description -%}
+    {%- assign pubblication_tools = pubblication.tools -%}
+
+    {%- if pubblication.external_url -%}
+      {%- assign pubblication_url = pubblication.external_url -%}
+      {%- assign external    = true -%}
+    {%- else -%}
+      {%- assign pubblication_url = pubblication.url | relative_url -%}
+      {%- assign external    = false -%}
+    {%- endif -%}
+
+    {% include pubblications/pubblication-card.html %}
+
+  {% endfor %}
+
+</div>
